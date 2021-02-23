@@ -1,3 +1,5 @@
+% opens EEG data files, generates Hamming windows (stride of 1)
+
 function chop(file, saveFile)
 % loads all 14 electrods, each is a 38252x1 array
 load(file);
@@ -14,8 +16,8 @@ windows = cell(14, numWindows);
 for i = 1:14
     % this is the electrode we're currently working with
     temp = electrodes{i};
-    % hopefully all files have enough for 298 windows. If not, can change
-    % it so its variable, but that'll be a pain
+    % hopefully all files have enough for the same number of windows. 
+    % If not, can change it so its variable, but that'll be a pain
     count = 0;
     for j = 1:numWindows
         count = count + 1;
