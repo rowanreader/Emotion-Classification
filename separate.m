@@ -22,8 +22,11 @@ for i = 1:28
     % file to save data to
     saveFile = "TestTrain/" + temp + ".mat";
     % train and test cells require 4xnumber, still organized by electrode
-    train = cell(14, trainNum * 4);
-    test = cell(14, testNum * 4);
+    trainData = cell(14, trainNum * 4);
+    testData = cell(14, testNum * 4);
+    % corresponding labels
+    trainAns = zeros(1, trainNum * 4);
+    testAns = zeros(1, testNum * 4);
     for j = 1:4
         file = temp + j + ".mat";
         load(file);
@@ -31,10 +34,19 @@ for i = 1:28
         p = randperm(num);
         newWindows = windows(:, p);
         % assign to train and test
-        train(:,(j-1)*trainNum + 1: j*trainNum) = newWindows(:, 1:trainNum);
-        test(:, (j-1)*testNum + 1:j*testNum) = newWindows(:, trainNum + 1:end);
-        
+        trainData(:,(j-1)*trainNum + 1: j*trainNum) = newWindows(:, 1:trainNum);
+        testData(:, (j-1)*testNum + 1:j*testNum) = newWindows(:, trainNum + 1:end);
+        % also fill in answers
+        trainAns((j-1)*trainNum + 1: j*trainNum) = j;
+        testAns((j-1)*testNum + 1:j*testNum) = j;
     end
-    save(saveFile, 'test','train');
+    % shuffle so that all the windows are mixed in with other genres
+    p = randperm(4*trainNum);
+    trainData = trainData(:, p);
+    trainAns = trainAns(:, p);
+    p = randperm(4*testNum);
+    testData = testData(:, p);
+    testAns = testAns(:,p);
+    save(saveFile,'trainData', 'trainAns', 'testData', 'testAns');
     disp(i);
 end
